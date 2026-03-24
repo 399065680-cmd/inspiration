@@ -1,0 +1,19 @@
+{
+  "description": "灵感收集器微信小程序",
+  "packOptions": {
+    "ignore": []
+  },
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "trial",
+  "appid": "touristappid",
+  "projectname": "inspiration-miniprogram",
+  "simulatorType": "wechat",
+  "condition": {}
+}

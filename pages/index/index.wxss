@@ -1,0 +1,66 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.label {
+  margin-right: 8rpx;
+  color: #666;
+}
+
+.chip {
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #f1f2f5;
+  margin-right: 12rpx;
+  margin-top: 6rpx;
+}
+
+.chip-active {
+  background: #e8f2ff;
+  color: #1677ff;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.meta {
+  color: #8a8f99;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+}
+
+.notes {
+  margin-top: 12rpx;
+  color: #333;
+}
+
+.tags {
+  margin-top: 10rpx;
+}
+
+.tag {
+  margin-right: 10rpx;
+  color: #1677ff;
+  font-size: 24rpx;
+}
+
+.empty {
+  text-align: center;
+  color: #888;
+  padding: 80rpx 0;
+}
+
+.fab {
+  position: fixed;
+  right: 24rpx;
+  bottom: 40rpx;
+  width: 180rpx;
+}
+
+.mt12 {
+  margin-top: 12rpx;
+}

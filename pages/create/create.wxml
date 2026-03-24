@@ -1,0 +1,27 @@
+<view class="container">
+  <view class="card">
+    <view class="field">
+      <text class="label">链接</text>
+      <input placeholder="粘贴抖音/小红书链接（可选）" bindinput="onUrlInput" />
+    </view>
+    <view class="platform">识别平台：{{sourcePlatform}}</view>
+  </view>
+
+  <view class="card">
+    <view class="field">
+      <text class="label">标题</text>
+      <input placeholder="给这条灵感起个名字" bindinput="onTitleInput" />
+    </view>
+    <view class="field">
+      <text class="label">标签</text>
+      <textarea placeholder="多个标签用逗号分隔，如：剪辑,选题,开场" bindinput="onTagsInput" />
+    </view>
+    <view class="field">
+      <text class="label">我的想法</text>
+      <textarea placeholder="记录你为什么想做、怎么改编" bindinput="onNotesInput" />
+    </view>
+  </view>
+
+  <button class="btn-primary mt20" bindtap="saveInbox">仅保存到收集箱</button>
+  <button class="mt20" bindtap="saveTodo">保存并标记待执行</button>
+</view>

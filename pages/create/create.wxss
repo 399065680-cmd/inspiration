@@ -1,0 +1,31 @@
+.field {
+  margin-bottom: 20rpx;
+}
+
+.label {
+  display: block;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+input,
+textarea {
+  width: 100%;
+  background: #f7f8fa;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 140rpx;
+}
+
+.platform {
+  color: #1677ff;
+  font-size: 24rpx;
+}
+
+.mt20 {
+  margin-top: 20rpx;
+}

@@ -1,0 +1,51 @@
+.field {
+  margin-bottom: 20rpx;
+}
+
+.label {
+  display: block;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+input,
+textarea {
+  width: 100%;
+  background: #f7f8fa;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 140rpx;
+}
+
+.meta {
+  color: #8a8f99;
+  font-size: 24rpx;
+}
+
+.row {
+  display: flex;
+}
+
+.chip {
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #f1f2f5;
+  margin-right: 12rpx;
+}
+
+.chip-active {
+  background: #e8f2ff;
+  color: #1677ff;
+}
+
+.mt20 {
+  margin-top: 20rpx;
+}
+
+.danger {
+  color: #d92d20;
+}

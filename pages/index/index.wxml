@@ -1,0 +1,39 @@
+<view class="container">
+  <view class="card">
+    <input placeholder="搜索标题/想法/标签" bindinput="onSearchInput" />
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <text class="label">平台：</text>
+      <text class="chip {{platformFilter==='all'?'chip-active':''}}" data-value="all" bindtap="onPlatformChange">全部</text>
+      <text class="chip {{platformFilter==='douyin'?'chip-active':''}}" data-value="douyin" bindtap="onPlatformChange">抖音</text>
+      <text class="chip {{platformFilter==='xiaohongshu'?'chip-active':''}}" data-value="xiaohongshu" bindtap="onPlatformChange">小红书</text>
+      <text class="chip {{platformFilter==='other'?'chip-active':''}}" data-value="other" bindtap="onPlatformChange">其他</text>
+    </view>
+    <view class="row mt12">
+      <text class="label">状态：</text>
+      <text class="chip {{statusFilter==='all'?'chip-active':''}}" data-value="all" bindtap="onStatusChange">全部</text>
+      <text class="chip {{statusFilter==='inbox'?'chip-active':''}}" data-value="inbox" bindtap="onStatusChange">收集箱</text>
+      <text class="chip {{statusFilter==='todo'?'chip-active':''}}" data-value="todo" bindtap="onStatusChange">待执行</text>
+      <text class="chip {{statusFilter==='done'?'chip-active':''}}" data-value="done" bindtap="onStatusChange">已完成</text>
+    </view>
+  </view>
+
+  <block wx:if="{{list.length === 0}}">
+    <view class="empty">还没有灵感，点右下角开始记录</view>
+  </block>
+
+  <block wx:for="{{list}}" wx:key="id">
+    <view class="card" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="title">{{item.title}}</view>
+      <view class="meta">{{item.sourcePlatform}} · {{item.status}}</view>
+      <view class="notes">{{item.notes || '暂无备注'}}</view>
+      <view class="tags">
+        <text class="tag" wx:for="{{item.tags}}" wx:key="*this">#{{item}}</text>
+      </view>
+    </view>
+  </block>
+
+  <button class="fab btn-primary" bindtap="goCreate">+ 新建</button>
+</view>

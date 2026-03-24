@@ -1,0 +1,36 @@
+<view class="container" wx:if="{{item}}">
+  <view class="card">
+    <view class="field">
+      <text class="label">标题</text>
+      <input value="{{item.title}}" bindinput="onTitleInput" />
+    </view>
+    <view class="field">
+      <text class="label">链接</text>
+      <input value="{{item.sourceUrl}}" bindinput="onUrlInput" />
+    </view>
+    <view class="meta">平台：{{item.sourcePlatform}}</view>
+  </view>
+
+  <view class="card">
+    <view class="field">
+      <text class="label">标签</text>
+      <textarea value="{{tagsInput}}" bindinput="onTagsInput" />
+    </view>
+    <view class="field">
+      <text class="label">我的想法</text>
+      <textarea value="{{item.notes}}" bindinput="onNotesInput" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="label">状态</view>
+    <view class="row">
+      <text class="chip {{item.status==='inbox'?'chip-active':''}}" data-value="inbox" bindtap="setStatus">收集箱</text>
+      <text class="chip {{item.status==='todo'?'chip-active':''}}" data-value="todo" bindtap="setStatus">待执行</text>
+      <text class="chip {{item.status==='done'?'chip-active':''}}" data-value="done" bindtap="setStatus">已完成</text>
+    </view>
+  </view>
+
+  <button class="btn-primary mt20" bindtap="saveEdit">保存修改</button>
+  <button class="mt20 danger" bindtap="deleteItem">删除</button>
+</view>
