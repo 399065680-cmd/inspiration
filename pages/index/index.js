@@ -1,14 +1,40 @@
 const { listItems, addItem } = require("../../utils/store");
 
+const PLATFORM_INFO = {
+  douyin: { emoji: "🎵", bg: "#1a1a2e" },
+  xiaohongshu: { emoji: "📕", bg: "#fe2c55" },
+  weibo: { emoji: "🌐", bg: "#e6162d" },
+  taobao: { emoji: "🛍", bg: "#ff6034" },
+  other: { emoji: "💡", bg: "#6c5ce7" }
+};
+
+function getPlatformInfo(platform) {
+  return PLATFORM_INFO[platform] || PLATFORM_INFO.other;
+}
+
+function formatTime(ts) {
+  if (!ts) return "";
+  const now = Date.now();
+  const diff = now - ts;
+  if (diff < 60000) return "刚刚";
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+  const d = new Date(ts);
+  const today = new Date();
+  if (d.toDateString() === today.toDateString()) {
+    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  }
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  if (d.toDateString() === yesterday.toDateString()) return "昨天";
+  return `${d.getMonth() + 1}/${d.getDate()}`;
+}
+
 Page({
   data: {
     list: [],
-    keyword: "",
-    platformFilter: "all",
-    statusFilter: "all",
-    showQuickCreate: false,
-    quickUrl: "",
-    quickNotes: ""
+    quickInput: "",
+    todayCount: 0,
+    weekCount: 0
   },
 
   onShow() {
@@ -17,92 +43,58 @@ Page({
 
   async loadData() {
     const all = await listItems();
-    const { keyword, platformFilter, statusFilter } = this.data;
-    const filtered = all.filter((item) => {
-      const textMatched =
-        !keyword ||
-        item.title.includes(keyword) ||
-        item.notes.includes(keyword) ||
-        item.tags.join(",").includes(keyword);
-      const platformMatched =
-        platformFilter === "all" || item.sourcePlatform === platformFilter;
-      const statusMatched = statusFilter === "all" || item.status === statusFilter;
-      return textMatched && platformMatched && statusMatched;
+    const todayStart = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
+    const weekStart = todayStart - ((new Date().getDay() || 7) - 1) * 86400000;
+    const todayCount = all.filter((x) => x.createdAt >= todayStart).length;
+    const weekCount = all.filter((x) => x.createdAt >= weekStart).length;
+    const list = all.map((item) => {
+      const pi = getPlatformInfo(item.sourcePlatform);
+      return {
+        ...item,
+        platformEmoji: pi.emoji,
+        platformBg: pi.bg,
+        timeStr: formatTime(item.createdAt)
+      };
     });
-    this.setData({ list: filtered });
+    this.setData({ list, todayCount, weekCount });
   },
 
-  onSearchInput(e) {
-    this.setData({ keyword: e.detail.value.trim() });
-    this.loadData();
+  onQuickInput(e) {
+    this.setData({ quickInput: e.detail.value });
   },
 
-  onPlatformChange(e) {
-    this.setData({ platformFilter: e.currentTarget.dataset.value });
-    this.loadData();
-  },
-
-  onStatusChange(e) {
-    this.setData({ statusFilter: e.currentTarget.dataset.value });
-    this.loadData();
-  },
-
-  openQuickCreate() {
-    this.setData({
-      showQuickCreate: true,
-      quickUrl: "",
-      quickNotes: ""
+  pasteFromClipboard() {
+    wx.getClipboardData({
+      success: (res) => {
+        if (res.data) this.setData({ quickInput: res.data });
+      },
+      fail: () => {
+        wx.showToast({ title: "读取剪贴板失败", icon: "none" });
+      }
     });
   },
 
-  closeQuickCreate() {
-    this.setData({ showQuickCreate: false });
-  },
-
-  onQuickUrlInput(e) {
-    this.setData({ quickUrl: e.detail.value.trim() });
-  },
-
-  onQuickNotesInput(e) {
-    this.setData({ quickNotes: e.detail.value });
+  openVoice() {
+    wx.showToast({ title: "语音功能即将上线", icon: "none" });
   },
 
   detectPlatform(url) {
     if (!url) return "other";
     const lower = url.toLowerCase();
-    if (lower.includes("douyin.com")) return "douyin";
-    if (lower.includes("xiaohongshu.com")) return "xiaohongshu";
+    if (lower.includes("douyin.com") || lower.includes("iesdouyin.com")) return "douyin";
+    if (lower.includes("xiaohongshu.com") || lower.includes("xhslink.com")) return "xiaohongshu";
+    if (lower.includes("weibo.com")) return "weibo";
+    if (lower.includes("taobao.com") || lower.includes("tmall.com")) return "taobao";
     return "other";
-  },
-
-  guessCoverImage(url, platform) {
-    const lower = (url || "").toLowerCase();
-    if (/\.(png|jpg|jpeg|webp|gif)(\?.*)?$/.test(lower)) {
-      return url;
-    }
-    if (platform === "douyin") {
-      return "https://p9-pc-sign.douyinpic.com/tos-cn-i-0813/93f1cbf53f6845728a7f8d357f3f2207~tplv-dy-resize-walign-adapt-aq:540:q75.webp";
-    }
-    if (platform === "xiaohongshu") {
-      return "https://fe-static.xhscdn.com/fedos/small-app-web/public/home.7b6dc09c.png";
-    }
-    return "";
   },
 
   async parseByCloud(url) {
     const app = getApp();
     const env = app && app.globalData ? app.globalData.cloudEnv : "";
-    if (!url || !wx.cloud || !env || env === "your-cloud-env-id") {
-      return null;
-    }
+    if (!url || !wx.cloud || !env || env === "your-cloud-env-id") return null;
     try {
-      const res = await wx.cloud.callFunction({
-        name: "parseLinkMeta",
-        data: { url }
-      });
-      if (!res || !res.result || !res.result.success) {
-        return null;
-      }
+      const res = await wx.cloud.callFunction({ name: "parseLinkMeta", data: { url } });
+      if (!res || !res.result || !res.result.success) return null;
       return res.result.data || null;
     } catch (e) {
       return null;
@@ -110,40 +102,46 @@ Page({
   },
 
   async saveQuickItem() {
-    const { quickUrl, quickNotes } = this.data;
-    if (!quickUrl && !quickNotes) {
-      wx.showToast({ title: "请填链接或想法", icon: "none" });
+    const { quickInput } = this.data;
+    if (!quickInput.trim()) {
+      wx.showToast({ title: "请输入链接或想法", icon: "none" });
       return;
     }
+    const isUrl = /^https?:\/\//i.test(quickInput.trim());
+    const quickUrl = isUrl ? quickInput.trim() : "";
+    const quickNotes = isUrl ? "" : quickInput.trim();
     let sourcePlatform = this.detectPlatform(quickUrl);
-    let coverImage = this.guessCoverImage(quickUrl, sourcePlatform);
-    let title = quickNotes ? quickNotes.slice(0, 18) : "链接灵感";
+    let coverImage = "";
+    let title = quickNotes ? quickNotes.slice(0, 20) : "链接灵感";
 
+    wx.showLoading({ title: "保存中..." });
     const cloudParsed = await this.parseByCloud(quickUrl);
     if (cloudParsed) {
       sourcePlatform = cloudParsed.sourcePlatform || sourcePlatform;
       coverImage = cloudParsed.coverImage || coverImage;
-      if (!quickNotes) {
-        title = cloudParsed.title || title;
-      }
+      if (!quickNotes) title = cloudParsed.title || title;
     }
-
-    await addItem({
-      title,
-      sourceUrl: quickUrl,
-      sourcePlatform,
-      coverImage,
-      notes: quickNotes,
-      tags: [],
-      status: "inbox"
-    });
+    await addItem({ title, sourceUrl: quickUrl, sourcePlatform, coverImage, notes: quickNotes, tags: [], status: "inbox" });
+    wx.hideLoading();
     wx.showToast({ title: "已保存", icon: "success" });
-    this.closeQuickCreate();
+    this.setData({ quickInput: "" });
     this.loadData();
   },
 
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+  },
+
+  goCategory() {
+    wx.navigateTo({ url: "/pages/category/category" });
+  },
+
+  goSearch() {
+    wx.navigateTo({ url: "/pages/search/search" });
+  },
+
+  goProfile() {
+    wx.navigateTo({ url: "/pages/profile/profile" });
   }
 });

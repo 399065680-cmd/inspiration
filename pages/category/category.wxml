@@ -1,0 +1,59 @@
+<view class="page">
+  <view class="page-title">分类筛选</view>
+
+  <view class="section">
+    <text class="section-label">平台</text>
+    <view class="chips">
+      <text
+        class="chip {{platformFilter === item.key ? 'chip-active' : ''}}"
+        wx:for="{{platforms}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onPlatformTap"
+      >{{item.label}}</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="section-label">状态</text>
+    <view class="chips">
+      <text
+        class="chip {{statusFilter === item.key ? 'chip-active' : ''}}"
+        wx:for="{{statuses}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onStatusTap"
+      >{{item.label}}</text>
+    </view>
+  </view>
+
+  <view class="result-count">共 {{list.length}} 条</view>
+
+  <view class="list">
+    <view class="card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="card-title">{{item.title}}</view>
+      <view class="card-meta">{{item.sourcePlatform}} · {{item.status}}</view>
+      <view class="card-notes">{{item.notes || item.sourceUrl || '暂无备注'}}</view>
+    </view>
+    <view class="empty" wx:if="{{list.length === 0}}">暂无匹配的灵感</view>
+  </view>
+
+  <view class="bottom-nav">
+    <view class="nav-item" bindtap="goHome">
+      <text class="nav-icon">⌂</text>
+      <text class="nav-label">首页</text>
+    </view>
+    <view class="nav-item nav-active">
+      <text class="nav-icon">⊞</text>
+      <text class="nav-label">分类</text>
+    </view>
+    <view class="nav-item" bindtap="goSearch">
+      <text class="nav-icon">⊙</text>
+      <text class="nav-label">搜索</text>
+    </view>
+    <view class="nav-item" bindtap="goProfile">
+      <text class="nav-icon">◎</text>
+      <text class="nav-label">我的</text>
+    </view>
+  </view>
+</view>

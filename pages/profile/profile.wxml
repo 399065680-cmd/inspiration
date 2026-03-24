@@ -1,0 +1,56 @@
+<view class="page">
+  <view class="avatar-area">
+    <view class="avatar">灵</view>
+    <text class="nickname">我的灵感库</text>
+  </view>
+
+  <view class="stats-grid">
+    <view class="stat-card">
+      <text class="stat-num">{{totalCount}}</text>
+      <text class="stat-label">全部</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-num">{{inboxCount}}</text>
+      <text class="stat-label">收集箱</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-num">{{todoCount}}</text>
+      <text class="stat-label">待执行</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-num">{{doneCount}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+  </view>
+
+  <view class="section-title">关于</view>
+  <view class="menu-list">
+    <view class="menu-item">
+      <text class="menu-icon">✦</text>
+      <text class="menu-text">灵感笔记 v1.0</text>
+    </view>
+    <view class="menu-item">
+      <text class="menu-icon">⊙</text>
+      <text class="menu-text">跨平台灵感采集工具</text>
+    </view>
+  </view>
+
+  <view class="bottom-nav">
+    <view class="nav-item" bindtap="goHome">
+      <text class="nav-icon">⌂</text>
+      <text class="nav-label">首页</text>
+    </view>
+    <view class="nav-item" bindtap="goCategory">
+      <text class="nav-icon">⊞</text>
+      <text class="nav-label">分类</text>
+    </view>
+    <view class="nav-item" bindtap="goSearch">
+      <text class="nav-icon">⊙</text>
+      <text class="nav-label">搜索</text>
+    </view>
+    <view class="nav-item nav-active">
+      <text class="nav-icon">◎</text>
+      <text class="nav-label">我的</text>
+    </view>
+  </view>
+</view>

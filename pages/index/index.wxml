@@ -1,66 +1,87 @@
-<view class="container">
-  <view class="card">
-    <input placeholder="搜索标题/想法/标签" bindinput="onSearchInput" />
-  </view>
+<view class="page">
 
-  <view class="card">
-    <view class="row">
-      <text class="label">平台：</text>
-      <text class="chip {{platformFilter==='all'?'chip-active':''}}" data-value="all" bindtap="onPlatformChange">全部</text>
-      <text class="chip {{platformFilter==='douyin'?'chip-active':''}}" data-value="douyin" bindtap="onPlatformChange">抖音</text>
-      <text class="chip {{platformFilter==='xiaohongshu'?'chip-active':''}}" data-value="xiaohongshu" bindtap="onPlatformChange">小红书</text>
-      <text class="chip {{platformFilter==='other'?'chip-active':''}}" data-value="other" bindtap="onPlatformChange">其他</text>
-    </view>
-    <view class="row mt12">
-      <text class="label">状态：</text>
-      <text class="chip {{statusFilter==='all'?'chip-active':''}}" data-value="all" bindtap="onStatusChange">全部</text>
-      <text class="chip {{statusFilter==='inbox'?'chip-active':''}}" data-value="inbox" bindtap="onStatusChange">收集箱</text>
-      <text class="chip {{statusFilter==='todo'?'chip-active':''}}" data-value="todo" bindtap="onStatusChange">待执行</text>
-      <text class="chip {{statusFilter==='done'?'chip-active':''}}" data-value="done" bindtap="onStatusChange">已完成</text>
-    </view>
-  </view>
-
-  <block wx:if="{{list.length === 0}}">
-    <view class="empty">还没有灵感，点右下角开始记录</view>
-  </block>
-
-  <block wx:for="{{list}}" wx:key="id">
-    <view class="card" data-id="{{item.id}}" bindtap="goDetail">
-      <image
-        wx:if="{{item.coverImage}}"
-        class="cover"
-        src="{{item.coverImage}}"
-        mode="aspectFill"
-      />
-      <view class="title">{{item.title}}</view>
-      <view class="meta">{{item.sourcePlatform}} · {{item.status}}</view>
-      <view class="notes">{{item.notes || item.sourceUrl || '暂无备注'}}</view>
-      <view class="tags" wx:if="{{item.tags && item.tags.length}}">
-        <text class="tag" wx:for="{{item.tags}}" wx:key="*this">#{{item}}</text>
+  <view class="header">
+    <view class="header-left">
+      <text class="app-title">灵感笔记</text>
+      <view class="stats-row">
+        <text class="stats-pill">今日 {{todayCount}} · 本周 {{weekCount}}</text>
       </view>
     </view>
-  </block>
-
-  <button class="fab btn-primary" bindtap="openQuickCreate">+ 速记</button>
-
-  <view class="mask" wx:if="{{showQuickCreate}}" bindtap="closeQuickCreate"></view>
-  <view class="sheet" wx:if="{{showQuickCreate}}">
-    <view class="sheet-title">快速记录灵感</view>
-    <textarea
-      class="sheet-input"
-      placeholder="粘贴链接（抖音/小红书/其他）"
-      bindinput="onQuickUrlInput"
-      value="{{quickUrl}}"
-    />
-    <textarea
-      class="sheet-input"
-      placeholder="顺手写下你想说的话"
-      bindinput="onQuickNotesInput"
-      value="{{quickNotes}}"
-    />
-    <view class="sheet-actions">
-      <button class="btn" bindtap="closeQuickCreate">取消</button>
-      <button class="btn btn-primary" bindtap="saveQuickItem">保存</button>
+    <view class="icon-btn" bindtap="goProfile">
+      <text class="icon-btn-text">⚙</text>
     </view>
   </view>
+
+  <view class="input-bar">
+    <text class="spark">✦</text>
+    <input
+      class="input-field"
+      placeholder="粘贴链接或你的想法..."
+      placeholder-class="input-placeholder"
+      bindinput="onQuickInput"
+      value="{{quickInput}}"
+      confirm-type="done"
+      bindconfirm="saveQuickItem"
+    />
+    <view class="input-actions">
+      <view class="icon-action" bindtap="pasteFromClipboard">
+        <text>⎘</text>
+      </view>
+      <view class="icon-action" bindtap="openVoice">
+        <text>♪</text>
+      </view>
+      <view class="save-btn" bindtap="saveQuickItem">
+        <text class="save-btn-text">+</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="list">
+    <view class="empty-state" wx:if="{{list.length === 0}}">
+      <text class="empty-icon">✦</text>
+      <text class="empty-text">还没有灵感，快开始记录吧</text>
+    </view>
+
+    <view
+      class="card"
+      wx:for="{{list}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <view class="platform-icon" style="background:{{item.platformBg}}">
+        <text class="platform-emoji">{{item.platformEmoji}}</text>
+      </view>
+      <view class="card-body">
+        <view class="card-top">
+          <text class="card-title">{{item.title}}</text>
+          <text class="card-time">{{item.timeStr}}</text>
+        </view>
+        <text class="card-desc">{{item.sourceUrl || item.notes || '暂无备注'}}</text>
+        <view class="tags-row" wx:if="{{item.tags && item.tags.length}}">
+          <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">#{{tag}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-nav">
+    <view class="nav-item nav-active">
+      <text class="nav-icon">⌂</text>
+      <text class="nav-label">首页</text>
+    </view>
+    <view class="nav-item" bindtap="goCategory">
+      <text class="nav-icon">⊞</text>
+      <text class="nav-label">分类</text>
+    </view>
+    <view class="nav-item" bindtap="goSearch">
+      <text class="nav-icon">⊙</text>
+      <text class="nav-label">搜索</text>
+    </view>
+    <view class="nav-item" bindtap="goProfile">
+      <text class="nav-icon">◎</text>
+      <text class="nav-label">我的</text>
+    </view>
+  </view>
+
 </view>

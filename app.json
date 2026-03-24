@@ -2,13 +2,17 @@
   "pages": [
     "pages/index/index",
     "pages/create/create",
-    "pages/detail/detail"
+    "pages/detail/detail",
+    "pages/category/category",
+    "pages/search/search",
+    "pages/profile/profile"
   ],
   "window": {
-    "navigationBarTitleText": "灵感收集器",
-    "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTextStyle": "black",
-    "backgroundTextStyle": "light"
+    "navigationBarTitleText": "灵感笔记",
+    "navigationBarBackgroundColor": "#13142a",
+    "navigationBarTextStyle": "white",
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#13142a"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"
