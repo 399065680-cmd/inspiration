@@ -26,14 +26,41 @@
 
   <block wx:for="{{list}}" wx:key="id">
     <view class="card" data-id="{{item.id}}" bindtap="goDetail">
+      <image
+        wx:if="{{item.coverImage}}"
+        class="cover"
+        src="{{item.coverImage}}"
+        mode="aspectFill"
+      />
       <view class="title">{{item.title}}</view>
       <view class="meta">{{item.sourcePlatform}} · {{item.status}}</view>
-      <view class="notes">{{item.notes || '暂无备注'}}</view>
-      <view class="tags">
+      <view class="notes">{{item.notes || item.sourceUrl || '暂无备注'}}</view>
+      <view class="tags" wx:if="{{item.tags && item.tags.length}}">
         <text class="tag" wx:for="{{item.tags}}" wx:key="*this">#{{item}}</text>
       </view>
     </view>
   </block>
 
-  <button class="fab btn-primary" bindtap="goCreate">+ 新建</button>
+  <button class="fab btn-primary" bindtap="openQuickCreate">+ 速记</button>
+
+  <view class="mask" wx:if="{{showQuickCreate}}" bindtap="closeQuickCreate"></view>
+  <view class="sheet" wx:if="{{showQuickCreate}}">
+    <view class="sheet-title">快速记录灵感</view>
+    <textarea
+      class="sheet-input"
+      placeholder="粘贴链接（抖音/小红书/其他）"
+      bindinput="onQuickUrlInput"
+      value="{{quickUrl}}"
+    />
+    <textarea
+      class="sheet-input"
+      placeholder="顺手写下你想说的话"
+      bindinput="onQuickNotesInput"
+      value="{{quickNotes}}"
+    />
+    <view class="sheet-actions">
+      <button class="btn" bindtap="closeQuickCreate">取消</button>
+      <button class="btn btn-primary" bindtap="saveQuickItem">保存</button>
+    </view>
+  </view>
 </view>

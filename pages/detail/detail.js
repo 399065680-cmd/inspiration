@@ -1,4 +1,4 @@
-const { getItems, saveItems } = require("../../utils/store");
+const { getItemById, updateItem, removeItem } = require("../../utils/store");
 
 Page({
   data: {
@@ -11,9 +11,8 @@ Page({
     this.loadItem();
   },
 
-  loadItem() {
-    const all = getItems();
-    const item = all.find((x) => x.id === this.id);
+  async loadItem() {
+    const item = await getItemById(this.id);
     if (!item) {
       wx.showToast({ title: "记录不存在", icon: "none" });
       setTimeout(() => wx.navigateBack(), 400);
@@ -52,32 +51,29 @@ Page({
     this.updateField("status", e.currentTarget.dataset.value);
   },
 
-  saveEdit() {
-    const all = getItems();
-    const idx = all.findIndex((x) => x.id === this.id);
-    if (idx < 0) return;
+  async saveEdit() {
     const tags = this.data.tagsInput
       .split(/[,\n，]/)
       .map((s) => s.trim())
       .filter(Boolean);
-    all[idx] = {
+    const updated = {
       ...this.data.item,
       tags,
       updatedAt: Date.now()
     };
-    saveItems(all);
-    wx.showToast({ title: "已更新", icon: "success" });
+    await updateItem(this.id, updated);
+    wx.showToast({ title: "已更新并同步", icon: "success" });
+    this.loadItem();
   },
 
   deleteItem() {
     wx.showModal({
       title: "确认删除",
       content: "删除后无法恢复，是否继续？",
-      success: (res) => {
+      success: async (res) => {
         if (!res.confirm) return;
-        const all = getItems().filter((x) => x.id !== this.id);
-        saveItems(all);
-        wx.showToast({ title: "已删除", icon: "success" });
+        await removeItem(this.id);
+        wx.showToast({ title: "已删除并同步", icon: "success" });
         setTimeout(() => wx.navigateBack(), 300);
       }
     });

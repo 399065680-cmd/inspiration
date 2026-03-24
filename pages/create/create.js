@@ -1,4 +1,4 @@
-const { getItems, saveItems, createItem } = require("../../utils/store");
+const { addItem } = require("../../utils/store");
 
 Page({
   data: {
@@ -29,17 +29,14 @@ Page({
     this.setData({ tagsInput: e.detail.value });
   },
 
-  saveAs(status) {
+  async saveAs(status) {
     const { title, sourceUrl, sourcePlatform, notes, tagsInput } = this.data;
     const tags = tagsInput
       .split(/[,\n，]/)
       .map((s) => s.trim())
       .filter(Boolean);
-    const item = createItem({ title, sourceUrl, sourcePlatform, notes, tags, status });
-    const all = getItems();
-    all.push(item);
-    saveItems(all);
-    wx.showToast({ title: "已保存", icon: "success" });
+    await addItem({ title, sourceUrl, sourcePlatform, notes, tags, status });
+    wx.showToast({ title: "已保存并同步", icon: "success" });
     setTimeout(() => wx.navigateBack(), 300);
   },
 

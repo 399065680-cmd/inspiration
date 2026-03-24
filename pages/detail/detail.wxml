@@ -1,5 +1,11 @@
 <view class="container" wx:if="{{item}}">
   <view class="card">
+    <image
+      wx:if="{{item.coverImage}}"
+      class="cover"
+      src="{{item.coverImage}}"
+      mode="aspectFill"
+    />
     <view class="field">
       <text class="label">标题</text>
       <input value="{{item.title}}" bindinput="onTitleInput" />

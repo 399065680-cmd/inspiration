@@ -5,3 +5,4 @@ miniprogram_npm/
 *.log
 .idea/
 .vscode/
+project.private.config.json
